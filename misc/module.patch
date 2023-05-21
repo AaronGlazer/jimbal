@@ -1,0 +1,23 @@
+--- module.jai	2023-04-07 06:24:17.818002000 -0700
++++ module_patched.jai	2023-05-21 09:25:23.124913200 -0700
+@@ -1855,8 +1855,19 @@
+ 
+             return out;
+ 
++        case .FunctionNoProto;
++            // FunctionNoProto means a C-style `void fn()` which takes any number of arguments
++            // (as opposed to `void fn(void)`), but there is no way to represent this in Jai.
++            function_type := create_function_type(cur, ty, func = null, cursor_is_accurate = cursor_is_accurate, loc = loc);
++            if !function_type return null;
++
++            function_type.flags &= ~.VARIADIC;
++
++            out := New(CType);
++            out.type_of_function = function_type;
++            return out;
++        
+         case .Auto;            #through;
+-        case .FunctionNoProto; #through; // What is this? (seems to happen for function typedefs?)
+         case .MemberPointer;   #through;
+         case .RValueReference; #through;
+         case .Vector;

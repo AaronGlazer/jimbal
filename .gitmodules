@@ -1,0 +1,3 @@
+[submodule "libgimbal"]
+	path = libgimbal
+	url = https://github.com/gyrovorbis/libgimbal

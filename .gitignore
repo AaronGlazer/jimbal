@@ -1,0 +1,5 @@
+.build
+build.bat
+*.exe
+*.pdb
+windows.jai
