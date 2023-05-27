@@ -12,7 +12,7 @@ main :: () {
 
     print("=============================\n");
     print_it();
-    added_array_view := JblArrayList_insert(*array_list, 1, s32.[14925]);
+    added_array_view := JblArrayList_insert(*array_list, 1, s32.[14925, 364964]);
     print("insert result: %\n", added_array_view);
     print_it();
     value, result1 := JblArrayList_popBack(*array_list);
