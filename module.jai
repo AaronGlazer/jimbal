@@ -21,54 +21,58 @@
 
 #scope_export
 
+#load "c.jai";
+
 #if OS == .WINDOWS {
     #load "windows.jai";
 }
 
-#scope_module
+// Wrappers
 
-#if PTR_SIZE == 8 {
-    size_t    :: u64;
-    ptrdiff_t :: s64;
-} else #if PTR_SIZE == 4 {
-    size_t    :: u32;
-    ptrdiff_t :: s32;
-} else #if PTR_SIZE == 2 {
-    size_t    :: u16;
-    ptrdiff_t :: s16;
-} else #if PTR_SIZE == 1 {
-    size_t    :: u8;
-    ptrdiff_t :: s8;
-} else {
-    #run Basic.assert(false, "Your platform's pointer size of % is not supported.", PTR_SIZE);
+JblArrayList :: struct(Element_Type: Type) {
+    using #as _: GblArrayList;
 }
 
-// TODO(aaron): No idea if these 2 are always correct.
-time_t :: s64;
-sig_atomic_t :: s32;
-
-timespec :: struct {
-    tv_sec:  time_t;
-    tv_nsec: s64;
+JblArrayList_clone :: (array_view: []$T) -> JblArrayList(T), GBL_RESULT #must {
+    array_list: JblArrayList(T) = ---;
+    result := GblArrayList_construct_7(
+        *array_list, size_of(T), cast(u64)array_view.count,
+        array_view.data, size_of(GblArrayList), 0,
+        null
+    );
+    return array_list, result;
 }
 
-tm :: struct {
-    tm_sec:   s32; // seconds after the minute: [0-60]
-    tm_min:   s32; // minutes after the hour:   [0-59]
-    tm_hour:  s32; // hours after midnight:     [0-23]
-    tm_mday:  s32; // day of the month:         [1-31]
-    tm_mon:   s32; // months since January:     [0-11]
-    tm_year:  s32; // years since 1900
-    tm_wday:  s32; // days since Sunday:    [0-6]
-    tm_yday:  s32; // days since January 1: [0-365]
-    tm_isdst: s32; // daylight saving time flag: < 0, 0, or > 0
+JblArrayList_to_array_view :: (array_list: JblArrayList($T)) -> []T #must {
+    using array_list.private_;
 
-    tm_gmtoff: s64;
-    tm_zone:  *u8;
+    assert(size_of(T) == elementSize);
+
+    array_view: []T = ---;
+    array_view.data = cast(*T)pData;
+    array_view.count = cast(s64)size;
+    return array_view;
 }
 
-#scope_file
+JblArrayList_assign :: (array_list: *JblArrayList($T), elements: []T) -> GBL_RESULT #must {
+    return GblArrayList_assign(array_list, elements.data, elements.count);
+}
 
-PTR_SIZE :: size_of(*void);
+JblArrayList_insert :: (array_list: *JblArrayList($T), index: u64, elements: []T) -> []T {
+    added_view: []T = ---;
+    added_view.data = GblArrayList_insert(array_list, index, cast(size_t)elements.count, elements.data);
+    added_view.count = elements.count;
+    return added_view;
+}
 
-Basic :: #import "Basic"; // ... Am I really taking a dependency on Basic just for assert???
+JblArrayList_popFront :: (array_list: *JblArrayList($T)) -> T, GBL_RESULT {
+    item: T = ---;
+    result := GblArrayList_popFront(array_list, *result);
+    return item, result;
+}
+
+JblArrayList_popBack :: (array_list: *JblArrayList($T)) -> T, GBL_RESULT {
+    item: T = ---;
+    result := GblArrayList_popBack(array_list, *item);
+    return item, result;
+}

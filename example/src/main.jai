@@ -1,26 +1,22 @@
 #import "Basic";
 #import "jimbal";
 
-to_jai_array_view :: (array: GblArrayList, $T: Type) -> []T {
-    using array.private_;
-
-    assert(size_of(T) == elementSize);
-    result: []T;
-    result.data = cast(*T)pData;
-    result.count = cast(s64)size;
-    return result;
-}
-
 main :: () {
-    ctx: *GblContext = null;
+    array_view := s32.[1, 4, 9, 25];
+    array_list, result0 := JblArrayList_clone(array_view);
+    assert(result0 == .SUCCESS);
 
-    array: GblArrayList;
-    GblArrayList_construct_7(*array, size_of(s32), 0, null, size_of(GblArrayList), 1, ctx);
-    defer GblArrayList_destruct(*array);
+    print_it :: () #expand {
+        print("array list: %\n\n", JblArrayList_to_array_view(array_list));
+    }
 
-    GblArrayList_insert(*array, 0, 3, s32.[1, 4, 9].data);
-
-    print("============");
-    print("\n%\n", to_jai_array_view(array, s32));
-    print("============");
+    print("=============================\n");
+    print_it();
+    added_array_view := JblArrayList_insert(*array_list, 1, s32.[14925]);
+    print("insert result: %\n", added_array_view);
+    print_it();
+    value, result1 := JblArrayList_popBack(*array_list);
+    print("popBack value, GBL_RESULT: % %\n", value, result1);
+    print_it();
+    print("=============================");
 }
