@@ -4,11 +4,7 @@ Jimbal is a binding of libGimbal to the Jai programming language. It is provided
 
 # WIP Disclaimer
 
-This project is incomplete. In fact, it is probably unusable for any practical purposes.
-
-Most notably, very many functions are missing due to static inline functions not being exported from libGimbal. Solving this is a work in progress.
-
-It is also new and not remotely extensively tested. We will have more room to test when the inline functions problem is taken care of.
+These bindings are not extensively tested.
 
 # Setup and Generation
 
