@@ -3,20 +3,24 @@
 
 main :: () {
     array_view := s32.[1, 4, 9, 25];
-    array_list, result0 := JblArrayList_clone(array_view);
-    assert(result0 == .SUCCESS);
+    array_list, result := JblArrayList_clone(array_view);
+    assert(result == .SUCCESS);
 
     print_it :: () #expand {
-        print("array list: %\n\n", JblArrayList_to_array_view(array_list));
+        print("array list: %\n", JblArrayList_to_array_view(array_list));
     }
 
     print("=============================\n");
     print_it();
-    added_array_view := JblArrayList_insert(*array_list, 1, s32.[14925, 364964]);
-    print("insert result: %\n", added_array_view);
+    JblArrayList_pushFront(*array_list, 0);
     print_it();
-    value, result1 := JblArrayList_popBack(*array_list);
-    print("popBack value, GBL_RESULT: % %\n", value, result1);
+    emplaced := JblArrayList_emplaceBack(*array_list);
     print_it();
-    print("=============================");
+    emplaced.* = 36;
+    print_it();
+    emplaced = JblArrayList_emplace(*array_list, 4);
+    print_it();
+    emplaced.* = 16;
+    print_it();
+    print("=============================\n");
 }
