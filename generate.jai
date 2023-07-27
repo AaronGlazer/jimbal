@@ -64,6 +64,7 @@ main :: () {
         found, filename, ext := split_from_right(info.short_name, ".");
         if !found return;
         if ext != "h" return;
+        if filename[filename.count-1] == #char "_" return;
 
         array_add(source_files, copy_string(info.full_name));
     }
